@@ -1,0 +1,75 @@
+
+library(MASS)
+
+sig <- matrix(c(1, .5, .5,
+                .5, 1, .5,
+                .5, .5, 1), ncol = 3)
+sig
+
+mat <- mvrnorm(n = 1000, mu = c(10, 10, 10), 
+               Sigma = sig, empirical = TRUE)
+summary(mat)
+
+round(cor(mat), 3)
+ncol(mat)
+nrow(mat)
+
+mat[9]
+
+df.1 <- data.frame(mat)
+names(df.1) <- c("x1","x2","x3")
+head(df.1)
+
+
+################################################################
+
+
+ncol(df.1)*nrow(df.1)
+
+df.1[2:5, 2:3]
+
+df.1[30]
+
+# first transform df into a matrix. 
+
+mat.1 <- as.matrix(df.1)
+mat.1[1:10,]
+
+length(mat.1)
+
+length(df.1)
+
+
+# What percentage do you want as missing? 
+
+N <- nrow(df.1)*ncol(df.1)
+
+p <- 7.5 # <-- percentage specified as missing....
+
+N*(p/100)
+
+id <- sort(sample(seq(1:length(mat.1)), N*(p/100), replace = FALSE))
+id
+
+mat.2 <- mat.1
+mat.2[id] <- NA
+summary(mat.2)
+
+# Create a function
+
+create.na <- function(df, p){
+  df <- as.matrix(df)
+  id <- sort(sample(seq(1:length(df)), nrow(df)*ncol(df)*(p/100), replace=FALSE))
+  df[id] <- NA
+  summary(df)
+}
+
+
+#Test function
+sig <- matrix(c(1, .5, .5, .5,
+                .5, 1, .5, .5,
+                .5, .5, 1, .5,
+                .5, .5, .5, 1), ncol = 4)
+test.mat <- mvrnorm(n=1000, mu=c(10,10,10,10), Sigma= sig, empirical=TRUE)
+summary(test.mat)
+create.na(test.mat, 5)  
